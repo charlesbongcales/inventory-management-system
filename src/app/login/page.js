@@ -14,35 +14,46 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
+    // Prefer explicit USERS API var
+    const API = process.env.NEXT_PUBLIC_USERS_API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const url = `${API}/login`;
+
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      // 1) call the endpoint
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      const data = await res.json();
+      // 2) try to parse JSON but gracefully handle non-JSON responses
+      let data;
+      const text = await res.text();
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (parseErr) {
+        data = { message: text || "" };
+      }
 
+      // 3) debug logs (open browser console)
+      console.log("LOGIN RESPONSE", { url, status: res.status, ok: res.ok, body: data });
+
+      // 4) handle errors from API
       if (!res.ok) {
-        setError(data.message || "Login failed");
+        const msg = data.message || data.error || `Request failed (${res.status})`;
+        setError(msg);
         return;
       }
 
-      // ✅ Store token + role in cookies
+      // 5) success — store token + role and redirect
       Cookies.set("token", data.token, { expires: 1 });
       Cookies.set("role", data.user.role, { expires: 1 });
 
-      // ✅ Redirect based on role
-      if (data.user.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/user");
-      }
+      if (data.user.role === "admin") router.push("/admin");
+      else router.push("/user");
     } catch (err) {
-      setError("Something went wrong. Try again.");
+      console.error("LOGIN FETCH ERROR", err);
+      setError(err.message || "Something went wrong. Try again.");
     }
   };
 
@@ -51,9 +62,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-lg">
         <h1 className="text-2xl font-bold text-white mb-6">Login</h1>
 
-        {error && (
-          <p className="mb-4 text-red-400 text-sm font-medium">{error}</p>
-        )}
+        {error && <p className="mb-4 text-red-400 text-sm font-medium">{error}</p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input

@@ -2,12 +2,18 @@
 
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { FaBox, FaClipboardList, FaCashRegister, FaSignOutAlt } from "react-icons/fa";
+import { 
+  FaBox, 
+  FaUsers, 
+  FaClipboardList, 
+  FaCog, 
+  FaSignOutAlt, 
+  FaTools, 
+  FaTags 
+} from "react-icons/fa";
 
-export default function UserPage() {
+export default function AdminLayout({ active, setActive, children }) {
   const router = useRouter();
-  const [active, setActive] = useState("dashboard");
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -16,11 +22,13 @@ export default function UserPage() {
   };
 
   const menuItems = [
-    { label: "Dashboard", key: "dashboard" },
+    { label: "Dashboard", icon: <FaTools />, key: "dashboard" },
     { label: "Products", icon: <FaBox />, key: "products" },
+    { label: "Categories", icon: <FaTags />, key: "categories" }, // ✅ Added
     { label: "Services", icon: <FaClipboardList />, key: "services" },
-    { label: "Sales", icon: <FaCashRegister />, key: "sales" },
-    { label: "Transactions", icon: <FaClipboardList />, key: "transactions" },
+    { label: "Users", icon: <FaUsers />, key: "users" },
+    { label: "Reports", icon: <FaClipboardList />, key: "reports" },
+    { label: "Settings", icon: <FaCog />, key: "settings" },
   ];
 
   return (
@@ -28,7 +36,7 @@ export default function UserPage() {
       {/* Sidebar */}
       <div className="w-64 bg-gray-800 p-6 flex flex-col justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-8">User Panel</h1>
+          <h1 className="text-2xl font-bold mb-8">Admin Panel</h1>
           <nav className="flex flex-col gap-4">
             {menuItems.map((item) => (
               <button
@@ -53,10 +61,7 @@ export default function UserPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">
-        <h2 className="text-3xl font-bold mb-4">{active.charAt(0).toUpperCase() + active.slice(1)}</h2>
-        <p>Content for "{active}" will go here...</p>
-      </div>
+      <div className="flex-1 p-8 overflow-auto">{children}</div>
     </div>
   );
 }
