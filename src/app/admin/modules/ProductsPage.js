@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -21,6 +22,7 @@ export default function ProductsPage() {
     image: null,
   });
 
+  // Fetch products
   const fetchProducts = async () => {
     try {
       const res = await fetch(`${API}/api/products`);
@@ -31,6 +33,7 @@ export default function ProductsPage() {
     }
   };
 
+  // Fetch categories
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${API}/api/categories`);
@@ -41,12 +44,14 @@ export default function ProductsPage() {
     }
   };
 
+  // Load products & categories
   useEffect(() => {
     fetchProducts();
     fetchCategories();
     setLoading(false);
   }, []);
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = { ...form };
@@ -60,13 +65,22 @@ export default function ProductsPage() {
       });
       if (!res.ok) throw new Error("Failed to save product");
       await fetchProducts();
-      setForm({ sku: "", name: "", description: "", category_id: "", price: 0, stock: 0, image: null });
+      setForm({
+        sku: "",
+        name: "",
+        description: "",
+        category_id: "",
+        price: 0,
+        stock: 0,
+        image: null,
+      });
       setPreview(null);
     } catch (err) {
       alert(err.message);
     }
   };
 
+  // Delete product
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -78,12 +92,11 @@ export default function ProductsPage() {
     }
   };
 
+  // Handle image preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setForm({ ...form, image: file });
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    }
+    if (file) setPreview(URL.createObjectURL(file));
   };
 
   if (loading) return <p className="text-white">Loading...</p>;
@@ -124,7 +137,9 @@ export default function ProductsPage() {
           >
             <option value="">Select Category</option>
             {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
           </select>
           <input
@@ -153,10 +168,12 @@ export default function ProductsPage() {
           {preview && (
             <div className="col-span-full">
               <p className="text-sm text-gray-600 mb-1">Image Preview:</p>
-              <img
+              <Image
                 src={preview}
                 alt="Preview"
-                className="h-32 rounded border object-cover"
+                width={128}
+                height={128}
+                className="rounded border object-cover"
               />
             </div>
           )}
@@ -201,10 +218,12 @@ export default function ProductsPage() {
                 <td className="px-4 py-2 border">{p.stock}</td>
                 <td className="px-4 py-2 border">
                   {p.image_path ? (
-                    <img
+                    <Image
                       src={`${API}/storage/${p.image_path}`}
                       alt={p.name}
-                      className="h-12 w-12 object-cover rounded"
+                      width={48}
+                      height={48}
+                      className="rounded object-cover"
                     />
                   ) : (
                     <span className="text-gray-400">No Image</span>
@@ -233,6 +252,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-
-
-

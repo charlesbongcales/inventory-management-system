@@ -29,9 +29,11 @@ export default function CategoriesPage() {
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+useEffect(() => {
+  fetchCategories();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
   // Create or update category
   const handleSubmit = async (e) => {

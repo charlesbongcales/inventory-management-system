@@ -54,8 +54,10 @@ export default function UserPage() {
 
       {/* Main Content */}
       <div className="flex-1 p-8 overflow-auto">
-        <h2 className="text-3xl font-bold mb-4">{active.charAt(0).toUpperCase() + active.slice(1)}</h2>
-        <p>Content for "{active}" will go here...</p>
+        <h2 className="text-3xl font-bold mb-4">
+          {active.charAt(0).toUpperCase() + active.slice(1)}
+        </h2>
+        <p>Content for &quot;{active}&quot; will go here...</p>
       </div>
     </div>
   );

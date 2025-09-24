@@ -4,15 +4,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function ServicesPage() {
-  /* ======================
-     API BASE URLS FROM ENV
-  ====================== */
   const API_SERVICES = process.env.NEXT_PUBLIC_SERVICES_API_URL + "/api";
   const API_PRODUCTS = process.env.NEXT_PUBLIC_PRODUCTS_API_URL + "/api";
 
-  /* ======================
-     STATES
-  ====================== */
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
 
@@ -37,9 +31,7 @@ export default function ServicesPage() {
     quantity: 0,
   });
 
-  /* ======================
-     FETCH DATA
-  ====================== */
+  // FETCH DATA
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${API_SERVICES}/service-categories`);
@@ -81,11 +73,10 @@ export default function ServicesPage() {
     fetchServices();
     fetchVariants();
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ======================
-     CATEGORY CRUD
-  ====================== */
+  // CATEGORY CRUD
   const addCategory = async () => {
     if (!newCategory.trim()) return;
     try {
@@ -106,9 +97,7 @@ export default function ServicesPage() {
     }
   };
 
-  /* ======================
-     SERVICE CRUD
-  ====================== */
+  // SERVICE CRUD
   const addService = async () => {
     if (!newService.service_name || !newService.services_category_id) return;
     try {
@@ -137,9 +126,7 @@ export default function ServicesPage() {
     }
   };
 
-  /* ======================
-     ASSIGN PRODUCT TO SERVICE
-  ====================== */
+  // ASSIGN PRODUCT
   const assignProductToService = async () => {
     const { service_id, variant_id, product_id, quantity } = assignProduct;
     if (!service_id || !variant_id || !product_id || quantity <= 0) return;
@@ -154,14 +141,11 @@ export default function ServicesPage() {
     }
   };
 
-  /* ======================
-     JSX RENDER
-  ====================== */
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Services Management</h1>
 
-      {/* CATEGORY MANAGEMENT */}
+      {/* CATEGORY */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Service Categories</h2>
         <div className="flex gap-2 mb-4">
@@ -191,7 +175,7 @@ export default function ServicesPage() {
         </ul>
       </div>
 
-      {/* SERVICES MANAGEMENT */}
+      {/* SERVICES */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Services</h2>
         <div className="grid grid-cols-7 gap-2 mb-4">
@@ -277,7 +261,7 @@ export default function ServicesPage() {
         </ul>
       </div>
 
-      {/* ASSIGN PRODUCT TO SERVICE */}
+      {/* ASSIGN PRODUCT */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Assign Product to Service</h2>
         <div className="grid grid-cols-4 gap-2 mb-4">
