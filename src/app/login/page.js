@@ -14,43 +14,41 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
-    // Prefer explicit USERS API var
-    const API = process.env.NEXT_PUBLIC_USERS_API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const API = process.env.NEXT_PUBLIC_USERS_API_URL;
     const url = `${API}/login`;
 
     try {
-      // 1) call the endpoint
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      // 2) try to parse JSON but gracefully handle non-JSON responses
-      let data;
-      const text = await res.text();
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch (parseErr) {
-        data = { message: text || "" };
-      }
+      const data = await res.json();
+      console.log("LOGIN RESPONSE:", res.status, data);
 
-      // 3) debug logs (open browser console)
-      console.log("LOGIN RESPONSE", { url, status: res.status, ok: res.ok, body: data });
-
-      // 4) handle errors from API
       if (!res.ok) {
-        const msg = data.message || data.error || `Request failed (${res.status})`;
-        setError(msg);
+        setError(data.message || `Login failed (${res.status})`);
         return;
       }
 
-      // 5) success — store token + role and redirect
-      Cookies.set("token", data.token, { expires: 1 });
-      Cookies.set("role", data.user.role, { expires: 1 });
+      if (!data.token || !data.user) {
+        setError("Login succeeded but no token or user returned. Check backend.");
+        return;
+      }
 
-      if (data.user.role === "admin") router.push("/admin");
-      else router.push("/user");
+      // Store token and role
+      Cookies.set("token", data.token, { expires: 1 });
+
+      // Map Supabase role to middleware-friendly role
+      const cookieRole = data.user.role === "employee" ? "employee" : data.user.role;
+      Cookies.set("role", cookieRole, { expires: 1 });
+      console.log("TOKEN:", Cookies.get("token"), "ROLE:", Cookies.get("role"));
+
+      // Redirect based on role
+      if (cookieRole === "admin") router.push("/admin");
+      else router.push("/user"); // employee
+
     } catch (err) {
       console.error("LOGIN FETCH ERROR", err);
       setError(err.message || "Something went wrong. Try again.");
@@ -68,21 +66,19 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-3 rounded-md bg-gray-700 text-white focus:outline-none"
+            className="w-full p-3 rounded-md bg-gray-700 text-white"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-3 rounded-md bg-gray-700 text-white focus:outline-none"
+            className="w-full p-3 rounded-md bg-gray-700 text-white"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
           <button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md font-semibold"

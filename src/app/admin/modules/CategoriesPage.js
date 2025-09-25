@@ -29,11 +29,9 @@ export default function CategoriesPage() {
     }
   };
 
-useEffect(() => {
-  fetchCategories();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   // Create or update category
   const handleSubmit = async (e) => {
@@ -75,64 +73,82 @@ useEffect(() => {
     setForm({ id: category.id, name: category.name, description: category.description || "" });
   };
 
-  if (loading) return <p>Loading categories...</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+  if (loading) return <p className="text-gray-600">Loading categories...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Categories CRUD</h1>
+    <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800">Categories CRUD</h1>
 
       {/* Category Form */}
-      <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded space-y-2">
-        <input
-          type="text"
-          placeholder="Category Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          {form.id ? "Update Category" : "Add Category"}
-        </button>
-      </form>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Add / Update Category</h2>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Category Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+            className="w-full border p-2 rounded bg-gray-50 text-gray-900 focus:ring-2 focus:ring-red-600"
+          />
+          <textarea
+            placeholder="Description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="w-full border p-2 rounded bg-gray-50 text-gray-900 focus:ring-2 focus:ring-red-600"
+          />
+          <button
+            type="submit"
+            className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 transition"
+          >
+            {form.id ? "Update Category" : "Add Category"}
+          </button>
+        </form>
+      </div>
 
       {/* Categories List */}
-      <table className="min-w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="px-4 py-2 border">Name</th>
-            <th className="px-4 py-2 border">Description</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((c) => (
-            <tr key={c.id} className="hover:bg-gray-100">
-              <td className="px-4 py-2 border">{c.name}</td>
-              <td className="px-4 py-2 border">{c.description}</td>
-              <td className="px-4 py-2 border space-x-2">
-                <button
-                  onClick={() => handleEdit(c)}
-                  className="bg-yellow-500 text-white px-2 py-1 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(c.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </td>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Categories List</h2>
+        <table className="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="px-4 py-2 border text-left">Name</th>
+              <th className="px-4 py-2 border text-left">Description</th>
+              <th className="px-4 py-2 border text-left">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {categories.map((c) => (
+              <tr key={c.id} className="hover:bg-gray-100">
+                <td className="px-4 py-2 border">{c.name}</td>
+                <td className="px-4 py-2 border">{c.description}</td>
+                <td className="px-4 py-2 border flex gap-2">
+                  <button
+                    onClick={() => handleEdit(c)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id)}
+                    className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800 transition"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {categories.length === 0 && (
+              <tr>
+                <td colSpan="3" className="text-center py-4 text-gray-500">
+                  No categories found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

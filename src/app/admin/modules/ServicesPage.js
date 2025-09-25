@@ -73,7 +73,6 @@ export default function ServicesPage() {
     fetchServices();
     fetchVariants();
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // CATEGORY CRUD
@@ -142,31 +141,37 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Services Management</h1>
+    <div className="p-6 space-y-10 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800">Services Management</h1>
 
-      {/* CATEGORY */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Service Categories</h2>
+      {/* SERVICE CATEGORIES */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Service Categories</h2>
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             placeholder="New Category"
-            className="border p-2 rounded w-64"
+            className="border p-2 rounded w-64 focus:ring-2 focus:ring-blue-600"
           />
-          <button onClick={addCategory} className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={addCategory}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
             Add
           </button>
         </div>
         <ul className="space-y-2">
           {categories.map((cat) => (
-            <li key={cat.services_category_id} className="flex justify-between border p-2 rounded">
+            <li
+              key={cat.services_category_id}
+              className="flex justify-between border p-2 rounded hover:bg-gray-50"
+            >
               <span>{cat.category_name}</span>
               <button
                 onClick={() => deleteCategory(cat.services_category_id)}
-                className="text-red-500"
+                className="text-red-600 hover:text-red-700 transition"
               >
                 Delete
               </button>
@@ -176,20 +181,20 @@ export default function ServicesPage() {
       </div>
 
       {/* SERVICES */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Services</h2>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Services</h2>
         <div className="grid grid-cols-7 gap-2 mb-4">
           <input
             type="text"
             value={newService.service_name}
             onChange={(e) => setNewService({ ...newService, service_name: e.target.value })}
             placeholder="Service Name"
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-green-600"
           />
           <select
             value={newService.services_category_id}
             onChange={(e) => setNewService({ ...newService, services_category_id: e.target.value })}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-green-600"
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
@@ -198,53 +203,34 @@ export default function ServicesPage() {
               </option>
             ))}
           </select>
-          <input
-            type="number"
-            value={newService.small}
-            onChange={(e) => setNewService({ ...newService, small: Number(e.target.value) })}
-            placeholder="Small Qty"
-            className="border p-2 rounded"
-          />
-          <input
-            type="number"
-            value={newService.medium}
-            onChange={(e) => setNewService({ ...newService, medium: Number(e.target.value) })}
-            placeholder="Medium Qty"
-            className="border p-2 rounded"
-          />
-          <input
-            type="number"
-            value={newService.large}
-            onChange={(e) => setNewService({ ...newService, large: Number(e.target.value) })}
-            placeholder="Large Qty"
-            className="border p-2 rounded"
-          />
-          <input
-            type="number"
-            value={newService.xl}
-            onChange={(e) => setNewService({ ...newService, xl: Number(e.target.value) })}
-            placeholder="XL Qty"
-            className="border p-2 rounded"
-          />
-          <input
-            type="number"
-            value={newService.xxl}
-            onChange={(e) => setNewService({ ...newService, xxl: Number(e.target.value) })}
-            placeholder="XXL Qty"
-            className="border p-2 rounded"
-          />
+          {["small", "medium", "large", "xl", "xxl"].map((size) => (
+            <input
+              key={size}
+              type="number"
+              value={newService[size]}
+              onChange={(e) => setNewService({ ...newService, [size]: Number(e.target.value) })}
+              placeholder={`${size.charAt(0).toUpperCase() + size.slice(1)} Qty`}
+              className="border p-2 rounded"
+            />
+          ))}
         </div>
-        <button onClick={addService} className="bg-green-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={addService}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+        >
           Add Service
         </button>
 
         <ul className="mt-6 space-y-2">
           {services.map((srv) => (
-            <li key={srv.service_id} className="flex justify-between border p-2 rounded">
+            <li
+              key={srv.service_id}
+              className="flex justify-between border p-2 rounded hover:bg-gray-50"
+            >
               <div>
                 <strong>{srv.service_name}</strong> <br />
                 <span className="text-sm text-gray-600">
-                  Category: {srv.services_category?.category_name}
+                  Category: {srv.services_category?.category_name || "N/A"}
                 </span>
                 <div className="text-sm">
                   Small: {srv.small}, Medium: {srv.medium}, Large: {srv.large}, XL: {srv.xl}, XXL: {srv.xxl}
@@ -252,7 +238,7 @@ export default function ServicesPage() {
               </div>
               <button
                 onClick={() => deleteService(srv.service_id)}
-                className="text-red-500"
+                className="text-red-600 hover:text-red-700 transition"
               >
                 Delete
               </button>
@@ -262,35 +248,39 @@ export default function ServicesPage() {
       </div>
 
       {/* ASSIGN PRODUCT */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Assign Product to Service</h2>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Assign Product to Service</h2>
         <div className="grid grid-cols-4 gap-2 mb-4">
           <select
             value={assignProduct.service_id}
             onChange={(e) => setAssignProduct({ ...assignProduct, service_id: e.target.value })}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-purple-600"
           >
             <option value="">Select Service</option>
             {services.map((srv) => (
-              <option key={srv.service_id} value={srv.service_id}>{srv.service_name}</option>
+              <option key={srv.service_id} value={srv.service_id}>
+                {srv.service_name}
+              </option>
             ))}
           </select>
 
           <select
             value={assignProduct.variant_id}
             onChange={(e) => setAssignProduct({ ...assignProduct, variant_id: e.target.value })}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-purple-600"
           >
             <option value="">Select Variant</option>
             {variants.map((v) => (
-              <option key={v.id} value={v.id}>{v.name}</option>
+              <option key={v.id} value={v.id}>
+                {v.name}
+              </option>
             ))}
           </select>
 
           <select
             value={assignProduct.product_id}
             onChange={(e) => setAssignProduct({ ...assignProduct, product_id: e.target.value })}
-            className="border p-2 rounded"
+            className="border p-2 rounded focus:ring-2 focus:ring-purple-600"
           >
             <option value="">Select Product</option>
             {products.map((p) => (
@@ -303,7 +293,9 @@ export default function ServicesPage() {
           <input
             type="number"
             value={assignProduct.quantity}
-            onChange={(e) => setAssignProduct({ ...assignProduct, quantity: Number(e.target.value) })}
+            onChange={(e) =>
+              setAssignProduct({ ...assignProduct, quantity: Number(e.target.value) })
+            }
             placeholder="Qty"
             className="border p-2 rounded"
           />
@@ -311,7 +303,7 @@ export default function ServicesPage() {
 
         <button
           onClick={assignProductToService}
-          className="bg-purple-600 text-white px-4 py-2 rounded"
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
         >
           Assign Product
         </button>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import AdminLayout from "./AdminLayout";
 import DashboardPage from "./modules/DashboardPage";
 import ProductsPage from "./modules/ProductsPage";
+import CategoriesPage from "./modules/CategoriesPage"; // <-- added
 import ServicesPage from "./modules/ServicesPage";
 import UsersPage from "./modules/UsersPage";
 import ReportsPage from "./modules/ReportsPage";
@@ -18,6 +19,8 @@ export default function AdminPage() {
         return <DashboardPage />;
       case "products":
         return <ProductsPage />;
+      case "categories":      // <-- added
+        return <CategoriesPage />;
       case "services":
         return <ServicesPage />;
       case "users":
@@ -31,5 +34,9 @@ export default function AdminPage() {
     }
   };
 
-  return <AdminLayout active={active} setActive={setActive}>{renderModule()}</AdminLayout>;
+  return (
+    <AdminLayout active={active} setActive={setActive}>
+      {renderModule()}
+    </AdminLayout>
+  );
 }

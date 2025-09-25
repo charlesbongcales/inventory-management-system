@@ -2,28 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Root variables */
 :root {
-  /* Light mode */
-  --background: #ffffff;
-  --foreground: #171717;
-  --card: #f9f9f9;
-  --card-foreground: #111111;
+  --background: #f5f5f5;        /* Light background */
+  --foreground: #171717;        /* Main text */
+  --card: #ffffff;               /* Card background */
+  --card-foreground: #111111;    /* Card text */
   --border: #e5e5e5;
+  --primary: #800F11;            /* Accent color */
+  --primary-hover: #A31217;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --sidebar-bg: #2c2c2c;         /* Sidebar color */
+  --sidebar-active: #3b0f11;
+  --sidebar-hover: #4d1418;
 }
 
+/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode */
     --background: #0a0a0a;
     --foreground: #ededed;
     --card: #1a1a1a;
     --card-foreground: #f5f5f5;
     --border: #333333;
+    --primary: #800F11;
+    --primary-hover: #A31217;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --sidebar-bg: #1a1a1a;
+    --sidebar-active: #3b0f11;
+    --sidebar-hover: #4d1418;
   }
 }
 
+/* Global body */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Cards */
+.bg-card {
+  background-color: var(--card);
+}
+.text-card {
+  color: var(--card-foreground);
+}
+.border-card {
+  border-color: var(--border);
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-4 py-2 rounded text-white font-semibold transition;
+  background-color: var(--primary);
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+.btn-danger {
+  @apply px-4 py-2 rounded text-white font-semibold transition;
+  background-color: var(--danger);
+}
+.btn-danger:hover {
+  background-color: var(--danger-hover);
+}
+
+/* Sidebar buttons */
+.sidebar-btn {
+  @apply flex items-center gap-3 p-2 rounded font-medium transition;
+  color: var(--foreground);
+}
+.sidebar-btn:hover {
+  background-color: var(--sidebar-hover);
+}
+.sidebar-btn-active {
+  background-color: var(--sidebar-active);
+  color: #fff;
 }

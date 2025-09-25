@@ -44,11 +44,15 @@ export default function ProductsPage() {
     }
   };
 
-  // Load products & categories
+  // Load data correctly with async
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-    setLoading(false);
+    const loadData = async () => {
+      setLoading(true);
+      await fetchCategories();
+      await fetchProducts();
+      setLoading(false);
+    };
+    loadData();
   }, []);
 
   // Handle form submit
@@ -99,16 +103,27 @@ export default function ProductsPage() {
     if (file) setPreview(URL.createObjectURL(file));
   };
 
-  if (loading) return <p className="text-white">Loading...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-[70vh]">
+        <p className="text-gray-600 text-lg font-medium">Loading products...</p>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-[70vh]">
+        <p className="text-red-600 text-lg font-medium">Error: {error}</p>
+      </div>
+    );
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold mb-4 text-white">Products CRUD</h1>
+    <div className="p-6 space-y-6 min-h-[80vh] bg-gray-100">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">Products Management</h1>
 
       {/* Product Form */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Add / Update Product</h2>
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">Add / Update Product</h2>
         <form
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -119,7 +134,7 @@ export default function ProductsPage() {
             value={form.sku}
             onChange={(e) => setForm({ ...form, sku: e.target.value })}
             required
-            className="border p-2 rounded bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700"
           />
           <input
             type="text"
@@ -127,13 +142,13 @@ export default function ProductsPage() {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
-            className="border p-2 rounded bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700"
           />
           <select
             value={form.category_id}
             onChange={(e) => setForm({ ...form, category_id: e.target.value })}
             required
-            className="border p-2 rounded bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700"
           >
             <option value="">Select Category</option>
             {categories.map((c) => (
@@ -148,7 +163,7 @@ export default function ProductsPage() {
             value={form.price}
             onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
             required
-            className="border p-2 rounded bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700"
           />
           <input
             type="number"
@@ -156,18 +171,18 @@ export default function ProductsPage() {
             value={form.stock}
             onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
             required
-            className="border p-2 rounded bg-gray-50 text-gray-900 focus:ring-2 focus:ring-blue-500"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700"
           />
           <input
             type="file"
             onChange={handleImageChange}
-            className="border p-2 rounded bg-gray-50 text-gray-900"
+            className="border p-2 rounded"
           />
 
           {/* Image Preview */}
           {preview && (
             <div className="col-span-full">
-              <p className="text-sm text-gray-600 mb-1">Image Preview:</p>
+              <p className="text-sm text-gray-500 mb-1">Image Preview:</p>
               <Image
                 src={preview}
                 alt="Preview"
@@ -182,23 +197,24 @@ export default function ProductsPage() {
             placeholder="Description"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="border p-2 rounded bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 col-span-full"
+            className="border p-2 rounded focus:ring-2 focus:ring-red-700 col-span-full"
           />
+
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded col-span-full hover:bg-blue-700 transition"
+            className="bg-red-700 text-white px-4 py-2 rounded col-span-full hover:bg-red-800 transition"
           >
             Save Product
           </button>
         </form>
       </div>
 
-      {/* Products List */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Products List</h2>
+      {/* Products Table */}
+      <div className="bg-white shadow rounded-lg p-6 overflow-x-auto">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">Products List</h2>
         <table className="min-w-full border border-gray-200 rounded">
           <thead>
-            <tr className="bg-gray-100 text-left">
+            <tr className="bg-gray-50 text-gray-600 text-left">
               <th className="px-4 py-2 border">SKU</th>
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Category</th>
@@ -210,7 +226,7 @@ export default function ProductsPage() {
           </thead>
           <tbody>
             {products.map((p) => (
-              <tr key={p.id} className="hover:bg-gray-50">
+              <tr key={p.id} className="hover:bg-gray-100">
                 <td className="px-4 py-2 border">{p.sku}</td>
                 <td className="px-4 py-2 border">{p.name}</td>
                 <td className="px-4 py-2 border">{p.categories?.name || "N/A"}</td>
@@ -232,7 +248,7 @@ export default function ProductsPage() {
                 <td className="px-4 py-2 border">
                   <button
                     onClick={() => handleDelete(p.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
                   >
                     Delete
                   </button>

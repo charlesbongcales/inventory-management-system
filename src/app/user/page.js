@@ -1,13 +1,28 @@
 "use client";
 
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Cookies from "js-cookie";
 import { FaBox, FaClipboardList, FaCashRegister, FaSignOutAlt } from "react-icons/fa";
 
 export default function UserPage() {
   const router = useRouter();
   const [active, setActive] = useState("dashboard");
+  const [isAuthorized, setIsAuthorized] = useState(null); // null = loading
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const role = Cookies.get("role");
+
+    if (!token || role !== "employee") {
+      router.replace("/login");
+    } else {
+      setIsAuthorized(true);
+      console.log("TOKEN:", token, "ROLE:", role);
+    }
+  }, [router]);
+
+  if (isAuthorized === null) return <div>Loading...</div>; // wait for client check
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -25,7 +40,6 @@ export default function UserPage() {
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
-      {/* Sidebar */}
       <div className="w-64 bg-gray-800 p-6 flex flex-col justify-between">
         <div>
           <h1 className="text-2xl font-bold mb-8">User Panel</h1>
@@ -52,7 +66,6 @@ export default function UserPage() {
         </button>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-8 overflow-auto">
         <h2 className="text-3xl font-bold mb-4">
           {active.charAt(0).toUpperCase() + active.slice(1)}
