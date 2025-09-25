@@ -4,11 +4,11 @@ import { useState } from "react";
 import AdminLayout from "./AdminLayout";
 import DashboardPage from "./modules/DashboardPage";
 import ProductsPage from "./modules/ProductsPage";
-import CategoriesPage from "./modules/CategoriesPage"; // <-- added
+import CategoriesPage from "./modules/CategoriesPage";
 import ServicesPage from "./modules/ServicesPage";
 import UsersPage from "./modules/UsersPage";
 import ReportsPage from "./modules/ReportsPage";
-import SettingsPage from "./modules/SettingsPage";
+import SuppliersPage from "./modules/SuppliersPage"; // 👈 new page
 
 export default function AdminPage() {
   const [active, setActive] = useState("dashboard");
@@ -19,7 +19,7 @@ export default function AdminPage() {
         return <DashboardPage />;
       case "products":
         return <ProductsPage />;
-      case "categories":      // <-- added
+      case "categories":
         return <CategoriesPage />;
       case "services":
         return <ServicesPage />;
@@ -27,8 +27,8 @@ export default function AdminPage() {
         return <UsersPage />;
       case "reports":
         return <ReportsPage />;
-      case "settings":
-        return <SettingsPage />;
+      case "suppliers": // 👈 replaced settings
+        return <SuppliersPage />;
       default:
         return <DashboardPage />;
     }

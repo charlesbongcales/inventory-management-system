@@ -6,10 +6,10 @@ import {
   FaBox, 
   FaUsers, 
   FaClipboardList, 
-  FaCog, 
   FaSignOutAlt, 
   FaTools, 
-  FaTags 
+  FaTags, 
+  FaTruck 
 } from "react-icons/fa";
 
 export default function AdminLayout({ active, setActive, children }) {
@@ -27,15 +27,16 @@ export default function AdminLayout({ active, setActive, children }) {
     { label: "Categories", icon: <FaTags />, key: "categories" },
     { label: "Services", icon: <FaClipboardList />, key: "services" },
     { label: "Users", icon: <FaUsers />, key: "users" },
+    { label: "Suppliers", icon: <FaTruck />, key: "suppliers" },
     { label: "Reports", icon: <FaClipboardList />, key: "reports" },
-    { label: "Settings", icon: <FaCog />, key: "settings" },
   ];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg p-6 flex flex-col justify-between">
-        <div>
+      {/* Fixed Sidebar */}
+      <div className="w-64 bg-white shadow-lg flex flex-col h-screen fixed">
+        {/* Menu (scrollable if too long) */}
+        <div className="p-6 flex-1 overflow-y-auto">
           <h1 className="text-2xl font-bold mb-8 text-gray-800">Admin Panel</h1>
           <nav className="flex flex-col gap-2">
             {menuItems.map((item) => (
@@ -52,16 +53,19 @@ export default function AdminLayout({ active, setActive, children }) {
           </nav>
         </div>
 
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 p-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition"
-        >
-          <FaSignOutAlt /> Logout
-        </button>
+        {/* Logout at bottom */}
+        <div className="p-6 border-t">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 p-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition w-full"
+          >
+            <FaSignOutAlt /> Logout
+          </button>
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">{children}</div>
+      {/* Main Content (scrollable) */}
+      <div className="flex-1 p-8 ml-64 overflow-auto">{children}</div>
     </div>
   );
 }
