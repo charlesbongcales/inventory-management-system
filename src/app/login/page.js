@@ -24,7 +24,16 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json(); // Try parsing JSON
+      } catch {
+        const text = await res.text(); // Fallback: raw response
+        console.error("RAW RESPONSE:", text);
+        setError("Server returned invalid JSON.");
+        return;
+      }
+
       console.log("LOGIN RESPONSE:", res.status, data);
 
       if (!res.ok) {
@@ -40,7 +49,7 @@ export default function LoginPage() {
       // Store token and role
       Cookies.set("token", data.token, { expires: 1 });
 
-      // Map Supabase role to middleware-friendly role
+      // Map role for middleware
       const cookieRole = data.user.role === "employee" ? "employee" : data.user.role;
       Cookies.set("role", cookieRole, { expires: 1 });
       console.log("TOKEN:", Cookies.get("token"), "ROLE:", Cookies.get("role"));
