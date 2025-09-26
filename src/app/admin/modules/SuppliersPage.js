@@ -284,7 +284,7 @@ export default function SuppliersPage() {
                 <td className="px-4 py-2 border">{s.email || "N/A"}</td>
                 <td className="px-4 py-2 border">{s.address || "N/A"}</td>
                 <td className="px-4 py-2 border">{s.notes || "N/A"}</td>
-                <td className="px-4 py-2 border space-x-2">
+                <td className="px-4 py-2 border flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(s)}
                     className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"

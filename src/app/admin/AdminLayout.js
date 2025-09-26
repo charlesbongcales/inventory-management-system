@@ -2,14 +2,14 @@
 
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { 
-  FaBox, 
-  FaUsers, 
-  FaClipboardList, 
-  FaSignOutAlt, 
-  FaTools, 
-  FaTags, 
-  FaTruck 
+import {
+  FaBox,
+  FaUsers,
+  FaClipboardList,
+  FaSignOutAlt,
+  FaTools,
+  FaTags,
+  FaTruck,
 } from "react-icons/fa";
 
 export default function AdminLayout({ active, setActive, children }) {
@@ -31,40 +31,51 @@ export default function AdminLayout({ active, setActive, children }) {
     { label: "Reports", icon: <FaClipboardList />, key: "reports" },
   ];
 
+  const navButtonClass = (key) =>
+    `flex items-center w-full px-5 py-4 mb-3 rounded-lg text-base font-medium transition-all duration-300 cursor-pointer relative
+    ${
+      active === key
+        ? "text-white bg-red-800 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-white before:rounded-r"
+        : "text-gray-700 hover:bg-red-800 hover:text-white hover:translate-x-1 active:translate-x-1 active:scale-98"
+    }`;
+
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Fixed Sidebar */}
-      <div className="w-64 bg-white shadow-lg flex flex-col h-screen fixed">
-        {/* Menu (scrollable if too long) */}
-        <div className="p-6 flex-1 overflow-y-auto">
-          <h1 className="text-2xl font-bold mb-8 text-gray-800">Admin Panel</h1>
-          <nav className="flex flex-col gap-2">
-            {menuItems.map((item) => (
-              <button
-                key={item.key}
-                className={`flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-red-100 transition ${
-                  active === item.key ? "bg-red-100 font-semibold" : ""
-                }`}
-                onClick={() => setActive(item.key)}
-              >
-                {item.icon} <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
+      {/* Sidebar */}
+      <div className="fixed top-0 left-0 w-64 h-screen bg-gray-100 border-r-4 border-red-800 shadow-lg flex flex-col py-4 z-50">
+        {/* Modern Header Card */}
+        <div className="px-4 mb-6">
+          <div className="bg-red-50 border border-red-200 rounded-xl shadow-md p-4 flex flex-col items-center justify-center">
+            <h1 className="text-2xl font-bold text-red-800 mb-1">Admin Panel</h1>
+            <p className="text-sm text-red-600">Welcome back!</p>
+          </div>
         </div>
 
-        {/* Logout at bottom */}
-        <div className="p-6 border-t">
+        {/* Navigation */}
+        <nav className="flex-1 flex flex-col px-3 overflow-y-auto">
+          {menuItems.map((item) => (
+            <button
+              key={item.key}
+              className={navButtonClass(item.key)}
+              onClick={() => setActive(item.key)}
+            >
+              <span className="mr-3">{item.icon}</span> {item.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <div className="mt-auto px-3 pt-5 border-t-2 border-gray-300">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 p-3 bg-red-700 text-white rounded-lg hover:bg-red-800 transition w-full"
+            className="flex items-center w-full px-5 py-4 rounded-lg text-base font-semibold text-white bg-red-800 hover:bg-red-900 transition-all duration-300 cursor-pointer"
           >
-            <FaSignOutAlt /> Logout
+            <FaSignOutAlt className="mr-3" /> Logout
           </button>
         </div>
       </div>
 
-      {/* Main Content (scrollable) */}
+      {/* Main Content */}
       <div className="flex-1 p-8 ml-64 overflow-auto">{children}</div>
     </div>
   );

@@ -26,15 +26,13 @@ export default function LoginPage() {
 
       let data;
       try {
-        data = await res.json(); // Try parsing JSON
+        data = await res.json();
       } catch {
-        const text = await res.text(); // Fallback: raw response
+        const text = await res.text();
         console.error("RAW RESPONSE:", text);
         setError("Server returned invalid JSON.");
         return;
       }
-
-      console.log("LOGIN RESPONSE:", res.status, data);
 
       if (!res.ok) {
         setError(data.message || `Login failed (${res.status})`);
@@ -46,17 +44,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Store token and role
       Cookies.set("token", data.token, { expires: 1 });
-
-      // Map role for middleware
       const cookieRole = data.user.role === "employee" ? "employee" : data.user.role;
       Cookies.set("role", cookieRole, { expires: 1 });
-      console.log("TOKEN:", Cookies.get("token"), "ROLE:", Cookies.get("role"));
 
-      // Redirect based on role
       if (cookieRole === "admin") router.push("/admin");
-      else router.push("/user"); // employee
+      else router.push("/user");
 
     } catch (err) {
       console.error("LOGIN FETCH ERROR", err);
@@ -65,17 +58,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
-      <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-lg">
-        <h1 className="text-2xl font-bold text-white mb-6">Login</h1>
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-md border border-gray-200">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h1>
 
-        {error && <p className="mb-4 text-red-400 text-sm font-medium">{error}</p>}
+        {error && <p className="mb-4 text-red-500 text-sm text-center">{error}</p>}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-3 rounded-md bg-gray-700 text-white"
+            className="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -83,14 +76,14 @@ export default function LoginPage() {
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-3 rounded-md bg-gray-700 text-white"
+            className="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md font-semibold"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md font-semibold transition-colors"
           >
             Log In
           </button>
